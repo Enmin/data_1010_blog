@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Application of SVD in image processing | fastpages</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Application of SVD in image processing" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="An easy to use blogging platform with support for Jupyter Notebooks." />
+<meta property="og:description" content="An easy to use blogging platform with support for Jupyter Notebooks." />
+<link rel="canonical" href="https://enmin.github.io/data_1010_blog/2020/11/20/blog.html" />
+<meta property="og:url" content="https://enmin.github.io/data_1010_blog/2020/11/20/blog.html" />
+<meta property="og:site_name" content="fastpages" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-11-20T00:00:00-06:00" />
+<script type="application/ld+json">
+{"description":"An easy to use blogging platform with support for Jupyter Notebooks.","url":"https://enmin.github.io/data_1010_blog/2020/11/20/blog.html","@type":"BlogPosting","headline":"Application of SVD in image processing","dateModified":"2020-11-20T00:00:00-06:00","datePublished":"2020-11-20T00:00:00-06:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://enmin.github.io/data_1010_blog/2020/11/20/blog.html"},"@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/data_1010_blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://enmin.github.io/data_1010_blog/feed.xml" title="fastpages" /><link rel="shortcut icon" type="image/x-icon" href="/data_1010_blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/data_1010_blog/">fastpages</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/data_1010_blog/about/">About Me</a><a class="page-link" href="/data_1010_blog/search/">Search</a><a class="page-link" href="/data_1010_blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Application of SVD in image processing</h1><p class="post-meta post-meta-title"><time class="dt-published" datetime="2020-11-20T00:00:00-06:00" itemprop="datePublished">
+        Nov 20, 2020
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      14 min read
+    
+</span></p>
+
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-wrap flex-justify-end">
+          <div class="px-2">
+
+    <a href="https://github.com/Enmin/data_1010_blog/tree/master/_notebooks/blog.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/data_1010_blog/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://mybinder.org/v2/gh/Enmin/data_1010_blog/master?filepath=_notebooks%2Fblog.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/data_1010_blog/assets/badges/binder.svg" alt="Open In Binder"/>
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://colab.research.google.com/github/Enmin/data_1010_blog/blob/master/_notebooks/blog.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/data_1010_blog/assets/badges/colab.svg" alt="Open In Colab"/>
+    </a>
+</div>
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/blog.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Introduction-to-SVD">Introduction to SVD<a class="anchor-link" href="#Introduction-to-SVD"> </a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Matrix factorization is a very important part of linear algebra. By decomposing the original matrix into matrices of different properties, the matrix factorization can not only show the potential attributes of the original matrix, but also help to implement various algorithms efficiently. Among all kinds of matrix factorizations, SVD (Singular Value Decomposition) is one of the most common used factorizaitons. SVD decomposes an aribitrary matrix into two orthogonal matrices and one diagonal matrix, with each of them has a specific mathematical meaning. We will elaborate on this process in the following section.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Definition of Singular Value: <br />
+Define $A \in C_r^{(m \times n)}$, $A^HA$ has eigenvalues $$\lambda_1 \geq \lambda_2 \geq \cdots \geq \lambda_r \geq \lambda_{r+1} = \lambda_n = 0$$
+Then we say $\sigma_i = \sqrt{\lambda_i} (i=1,2,\cdots,r)$ are singular values of the matrix $A$</p>
+<p>Assume that $A \in C_r^{(m \times n)}$, there exists matrix of rank m $U$ and matrix of rank n $v$ such that $$ A = U\Sigma V^H$$
+$\Sigma$ is the diagonal matrix of $A$'s singular values. $U$'s column are $A$'s left singular vectors and $V$'s columns are $A$'s right singular vectors.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Proof-of-SVD">Proof of SVD<a class="anchor-link" href="#Proof-of-SVD"> </a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Define $A \in C_r^{(m \times n)}$, $$V_1 = (v_1 v_2 \cdots v_r)$$
+is a set of normalized orthogonal vectors corresponding to $A^HA$'s $r$ eigenvalues $\sigma_i^2$, which satisfies $$A^HAv_i = \sigma_i^2 v_i (i=1,2,\cdots,r)$$
+left multiplies $v_i^H$, $$v_i^HA^HAv_i = ||Av_i||^2 = \sigma_i^2$$
+using square root on both sides, we get $||Av_i|| = \sigma_i$ <br />
+And $$Y_1=(y_1,y)2,\cdots,y_r)=AV_1=(Av_1,Av_2,\cdots,Av_r)$$
+$$Y_1^HY_1 = V_1^HA^HAV_1 = \left(\begin{matrix}
+   \sigma_1^2 &amp;&amp; 0 \\
+   &amp;\ddots&amp; \\
+   0 &amp;&amp; \sigma_r^2
+  \end{matrix}\right) = D$$
+Hence, $y_i(i=1,2,\cdots,r)$ is a set of orthogonal vectors and they have lengths $\sqrt(\sigma_i^2) = \sigma_i$. We can the calculate the unit vectors $$U_1 = Y_1D^{-1}$$
+and $$AV_1 = U_1D$$
+Now, we only need to combine $U_1$ and $AA^H$'s eigenvectors of trivial eigenvalues to form a orthogonal matrix $$U = (U_1\space\space U_2)$$
+And expand $V_1$ to orthogonal matrix $$V = (V_1 \space\space V_2)$$
+And then set $$\Sigma =  \left(\begin{matrix}
+   D &amp; 0 \\
+   0 &amp; O
+  \end{matrix}\right)$$
+Finally,$$AV = U\Sigma$$ $$A = U\Sigma V^H$$</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Meaning-of-SVD">Meaning of SVD<a class="anchor-link" href="#Meaning-of-SVD"> </a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>For any matrix  $A \in C_r^{(m \times n)}$, it has 4 vector space: <br /></p>
+<blockquote><ol>
+<li>(Row space):vector space formed by all row vectors <br />2. (Column space): vector space formed by all column vectors (Range) <br /></li>
+<li>(Null space): vector space formed by vectors that satisfy $Ax=0$ <br /></li>
+<li>(Left null space): vector space formed by vectors that satisfy $A^Hx=0$</li>
+</ol>
+</blockquote>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>From fundamental theorem of linear algebra, This four vector space have the following relationships:</p>
+<blockquote><p>the dimension of row space and vectors space are $r$ <br />
+the dimension of null space is $n - r$ <br />
+the left null space has dimension $m-r$ <br />
+the row space and null space are orthogonal complement <br />
+the column space and left null space are orthogonal complement <br /></p>
+</blockquote>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The SVD relates 4 vector space elegantly. First of all, $A$ and $A^HA$ have the same null space, because $A^HA$'s null space and eigen space formed by its zero eigenvalues are the same. Therefore, the $r+1th$ and $nth$ column of $V$ constitutes a set of unit orthogonal basis of the null space of $A$. <br />
+In terms of the orthogonality of $V$, the first to $rth$ columns of V forms a orthogonal complement vector space to the vector space of $r+1th$ to $nth$ columns of itself. By the uniqueness of orthogonal complement property and fundamental theorem of linear algebra, the first to $r$th columns of $V$ constitute a unit orthogonal basis of $A$'s row space. <br />
+In the same sense, the first to the $rth$ columns of $U$ form a vector space that is a unit orthogonal basis of $A$'s column space; the $r+1th$ to $mth$ columns of U forms a unit orthogonal basis of the left null space of A. What's more, according to SVD theorem, the first $rth$ columns of $U$ and those of $V$ (assume as $U_1$ and $V_1$) has the following relathionship: $$AV_1 = DU_1 (D = diag(\sigma_1, \sigma_2, \cdots, \sigma_r))$$
+Hence, SVD not only generates 4 unit orthogonal bases of 4 vectors space of the original matrix, but also relates its row space and column space through a simple linear transformation.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="SVD-in-Image-Processing">SVD in Image Processing<a class="anchor-link" href="#SVD-in-Image-Processing"> </a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>SVD has important usages in matrix calculations, text mining and many other fields. I will go through its usage in image processing, especially in the compression of images and the representation of image features</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="SVD-and-Compression-of-Images.">SVD and Compression of Images.<a class="anchor-link" href="#SVD-and-Compression-of-Images."> </a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Digital images could be considered as a 2-dimension matrix in which every entry represents the grayness of a pixel in the image. With the development of the related technologies, modern digital cameras are able to photograph a picture of millions of pixels. As a result, the matrix of the image has a relative large size, even huge. But due to the large portion of areas that have similar colors, which means the pixels are highly correlated in those areas, the image as certain certain level of redundancy of information in its corresponding matrix. <br />
+<br />
+Such redundancy can be measured by the rank of the matrix: A high rank matrix as lower correlation between columns and a low rank matrix has higher correlation bewteen columns. The picture below is transformed from a vector $u = [0, 0.1, 0.2, \cdots, 0.9]$ right multiplies a vector $v^H$ with 10 entries all equal to 1. <br /></p>
+<p><div align="center">&lt;img width = '150' height ='150' src =blog_imgs/black.png&gt;</div> <br />
+The matrix of the image is 
+$$\left(\begin{matrix}
+   0 &amp; 0 &amp; \cdots &amp; 0 \\
+   0.1 &amp; 0.1 &amp; \cdots &amp; 0.1 \\
+   0.2 &amp; 0.2 &amp; \cdots &amp; 0.2 \\
+   \vdots &amp; \vdots &amp;&amp; \vdots \\
+   0.9 &amp; 0.9 &amp; \cdots &amp; 0.9
+  \end{matrix}\right)$$
+Apparently, the rank of this matrix is 1 because every row of it can be achieved by another row multiplying a number. Hence, We just need $u,v$ vectors with 20 numbers to store all the information of this matrix. The 80 left entries are redundant in this case. The compression ratio is $$CR = \frac{20}{100} = 0.2$$
+Of course, this is an extreme case; the more general problem is like this: for a matrix for an image, how do we acquire the best similar matrix of a low rank? SVD gives an answer to this question. <br />
+<br />
+We can write SVD in the form of outer product expansion:
+$$A = U\Sigma V^H = (u_1,u_2,\cdots,u_m) \left(\begin{matrix}
+   \sigma_1 &amp;&amp;&amp; o \\
+    &amp;\ddots&amp;&amp;\\
+    &amp;&amp;\sigma_r&amp;\\
+   o &amp;&amp;&amp; o
+  \end{matrix}\right) \left(\begin{matrix}
+  v_1^H\\
+  v_2^H\\
+  \vdots\\
+  v_n^H\\
+  \end{matrix}\right) =\sum_{i=1}^r\sigma_i u_i v_i^H$$
+ <br />
+After we write the product in sum, SVD is only left with $r$ nonzero singular values and corresponding outer products with $u_i, v_i$. The rest of the outer products are redundant data, which contribute nothing to the construction of A. We can easily discover that, there is a nonzero eigenvalue of the above matrix. <br />
+<br />
+Naturally, we can perform SVD on any image, remove those vectors of its zero singular values and get a similar matrix with a lower rank. However, because of the existence of noise and the complexity of the image content, images in reality are always full rank. In other words, the number of nonzero singular values equal the number of columns or rows. Simply removing redundant singular vectors does not help in compression.
+<br /><br />
+Though highly correlated areas in images are linearly indepedent in definition rigorously, they can be seen as approximately linear dependent. This truth would cause the existence of extremely small singular values because the linear independence caused by the small differences between pixels does not matter in the whole image. Therefore, we can remove the small $\sigma_i$ in the outer product expansion formula to get a rank of $r-k$ matrix. This matrix is viewed as the low rak approximation. Here comes the question: how do we know that it is a good approximation?
+<br /></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Define $A \in C_r^{(m \times n)}$, the optimization problem  $$O = min||A-A_1||_F \space s.t. \space  rank(A_1) = 1$$
+takes its minimum when $A=\sigma_1 u_1 v_1^H$, and $\sigma_1$ is the biggest singular value of $A$, while $u_1,v_1$ are its left and right singular vectors. $||\cdot||_F$ is the Frobenius norm.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3><div align="center">---------------------------------------------------------------------------Simple Proof---------------------------------------------------------------------------------------</div></h3>
+<p>We can take the SVD of $A$ as $U\Sigma V^H$ and take it into the object funciton: $$||A - A_1||_F = ||U\Sigma V^H - A_1||_F$$
+Due to Forbenius norm's unitary invariance, we get $$ ||U\Sigma V^H - A_1||_F = ||\Sigma - U^HA_1V||_F$$
+As $A_1$ has rank 1, $U^HA_1V$ can be represented as $\alpha xy^H$, of which $x,y$ are the unit vectors in $C^M,C^N$. Hence, $$||U\Sigma V^H - A_1||_F = ||\Sigma-\alpha xy^H||_F$$
+With $||X||_F^2 = tr(X^HX)$, and $tr(XY) = tr(YX)$, we turn the problem into solving for the trace of the matrix instead of the Forbenius norm. <br />
+
+$$||\Sigma - \alpha xy^H||_F^2$$ $$=tr[(\Sigma-\alpha xy^H)^H(\Sigma - \alpha xy^H)]$$ $$=tr(\Sigma^H\Sigma - \Sigma^H-\alpha xy^H -\alpha xy^H\Sigma + \alpha^Hyy^H)$$
+
+
+$$=tr(\Sigma^H\Sigma + \alpha^2 - 2\alpha tr[\Sigma^H Re(xy^H)])$$ $$=||\Sigma||_F^2 + \alpha^2 - 2\alpha\sum_{i=1}^r\sigma_iRe(x_iy_i^*)$$
+
+And we have $$\sum_{i=1}^r\sigma_iRe(x_iy_i^*) \leq  \sum_{i=1}^r\sigma_i|x_iy_i^*| \leq \sum_{i=1}^r\sigma_i|x_i||y_i^*|\leq \sigma_1\sum_{i=1}^r|x_i||y_i^*|=\sigma_1(\tilde{x},\tilde{y})$$
+while $\tilde{x} = (|x_1|,|x_2|,\cdots,|x_r|), \tilde{y}=(|y_1|,|y_2|,\cdots,|y_r|$, and $(\cdot,\cdot)$ is the inner product of vectors. According to Cauchy-Schwartz inequality, we have $$\sigma_1(\tilde{x},\tilde{y}) \leq \sigma_1|\tilde{X}||\tilde{y}| \leq \sigma|x||y| = \sigma_1$$.
+Above all, the lower bound of $||A-A_1||_F^2$ = $$\Sigma^H\Sigma + \alpha^2 - 2\alpha tr[\Sigma^H Re(x_iy_i^*)]$$
+
+$$\geq ||\Sigma||_F^2 + \alpha^2 - 2\alpha\sigma_1$$ $$=||\Sigma||_F^2 + (\alpha-\sigma_1)^2 - \sigma_1^2$$
+
+When $\alpha = \sigma_1$, this lower bound gets its minimum $||\Sigma||_F^2 - \sigma_1^2$. By the way, $x,y$ is equal to $e_1 = (1,0,\cdots,0)^T$. Now we have $$A_1 = \alpha Uxy^HV^H=\alpha u_1v_1^H$$</p>
+<h3><div align="center">-------------------------------------------------------------------------------Done--------------------------------------------------------------------------------------------</div></h3>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In application, we can get a k-rank approximation of $A$ by an iterative 1-rank approximation greedy algorithm: <br /></p>
+<blockquote><p>1) get the best 1-rank approximation of matrix $A$ as $A_1$ <br />
+2) get the difference matrix $E_1 = A - A_1$ <br />
+3) get the best 1-rank approximation of $E_1$ as $A_2$ <br />
+4) get the difference matrix $E_2 = E_1 - A_2$ <br />
+5) iteratively approach the k times approximation till getting the result $\hat{A} = \sum_{i=1}^n A_i$</p>
+</blockquote>
+<p>Lawson and Hanson proved that this algorithm will return a best k-rank approximation, which is the sum of the first $kth$ outer products of SVD. Because $E_1 = A - \sigma_1 u_1 v_1^H = \sum_{i=1}^r \sigma_k u_k v_k^H$, the second iteration will return a 1-rank approximation of A_2 as $\sigma_2 u_2 v_2^H$, and kth iteration as $A_k = \sigma_k u_k v_k^H$, finally $$\hat{A} =\sum_{i=1}^K \sigma_k u_k v_k^H $$
+Above all, the first $kth$ outer products of SVD outer product expansion is its best k-rank approximation.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Example">Example<a class="anchor-link" href="#Example"> </a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><div align="center">&lt;img width = '150' height ='150' src=blog_imgs/example.png&gt;</div> <br /></p>
+<p><div align="center">&lt;img width = '250' height ='250' src=blog_imgs/example2.png&gt;</div> <br /></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="SVD-and-Image-representation">SVD and Image representation<a class="anchor-link" href="#SVD-and-Image-representation"> </a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>SVD has its more imporatant roles in image representation, which means picking basis vectors for images so that images can show various useful features. For example, Discrete Fourier Transform is one of the common image representation methods. SVD is also a powerful image representation method, which is also called Principle Componenet Analysis - PCA.</p>
+<p>Suppose that we have 10 2-dimension data as following:</p>
+<p><img src="/data_1010_blog/images/copied_from_nb/blog_imgs/data.png" alt="blog/imgs/data" /></p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="k">using</span> <span class="n">Plots</span>
+<span class="n">a</span> <span class="o">=</span> <span class="p">[(</span><span class="o">-</span><span class="mf">0.01</span><span class="p">,</span><span class="mf">0.3</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.3</span><span class="p">,</span><span class="o">-</span><span class="mf">0.28</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mf">1.32</span><span class="p">,</span><span class="o">-</span><span class="mf">1.43</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.42</span><span class="p">,</span><span class="o">-</span><span class="mf">0.57</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.6</span><span class="p">),</span> <span class="p">(</span><span class="mf">1.08</span><span class="p">,</span><span class="mf">0.42</span><span class="p">),</span> <span class="p">(</span><span class="mf">2.42</span><span class="p">,</span><span class="mf">1.99</span><span class="p">),</span> <span class="p">(</span><span class="mf">1.12</span><span class="p">,</span><span class="mf">0.03</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.05</span><span class="p">,</span><span class="mf">0.63</span><span class="p">),</span> <span class="p">(</span><span class="mf">1.47</span><span class="p">,</span><span class="mf">1.74</span><span class="p">)]</span>
+<span class="n">xs</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="kp">in</span> <span class="n">a</span><span class="p">]</span>
+<span class="n">ys</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="kp">in</span> <span class="n">a</span><span class="p">]</span>
+<span class="n">gr</span><span class="p">()</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">,</span> <span class="n">seriestype</span> <span class="o">=</span> <span class="o">:</span><span class="n">scatter</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_svg output_subarea output_execute_result">
+<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="600" height="400" viewBox="0 0 2400 1600">
+<defs>
+  <clipPath id="clip1700">
+    <rect x="0" y="0" width="2400" height="1600" />
+  </clipPath>
+</defs>
+<path clip-path="url(#clip1700)" d="
+M0 1600 L2400 1600 L2400 0 L0 0  Z
+  " fill="#ffffff" fill-rule="evenodd" fill-opacity="1" />
+<defs>
+  <clipPath id="clip1701">
+    <rect x="480" y="0" width="1681" height="1600" />
+  </clipPath>
+</defs>
+<path clip-path="url(#clip1700)" d="
+M125.256 1486.45 L2352.76 1486.45 L2352.76 47.2441 L125.256 47.2441  Z
+  " fill="#ffffff" fill-rule="evenodd" fill-opacity="1" />
+<defs>
+  <clipPath id="clip1702">
+    <rect x="125" y="47" width="2229" height="1440" />
+  </clipPath>
+</defs>
+<polyline clip-path="url(#clip1702)" style="stroke:#000000; stroke-width:2; stroke-opacity:0.1; fill:none" points="
+  368.098,1486.45 368.098,47.2441 
+  " />
+<polyline clip-path="url(#clip1702)" style="stroke:#000000; stroke-width:2; stroke-opacity:0.1; fill:none" points="
+  929.974,1486.45 929.974,47.2441 
+  " />
+<polyline clip-path="url(#clip1702)" style="stroke:#000000; stroke-width:2; stroke-opacity:0.1; fill:none" points="
+  1491.85,1486.45 1491.85,47.2441 
+  " />
+<polyline clip-path="url(#clip1702)" style="stroke:#000000; stroke-width:2; stroke-opacity:0.1; fill:none" points="
+  2053.73,1486.45 2053.73,47.2441 
+  " />
+<polyline clip-path="url(#clip1702)" style="stroke:#000000; stroke-width:2; stroke-opacity:0.1; fill:none" points="
+  125.256,1275.01 2352.76,1275.01 
+  " />
+<polyline clip-path="url(#clip1702)" style="stroke:#000000; stroke-width:2; stroke-opacity:0.1; fill:none" points="
+  125.256,878.006 2352.76,878.006 
+  " />
+<polyline clip-path="url(#clip1702)" style="stroke:#000000; stroke-width:2; stroke-opacity:0.1; fill:none" points="
+  125.256,481.006 2352.76,481.006 
+  " />
+<polyline clip-path="url(#clip1702)" style="stroke:#000000; stroke-width:2; stroke-opacity:0.1; fill:none" points="
+  125.256,84.0063 2352.76,84.0063 
+  " />
+<polyline clip-path="url(#clip1700)" style="stroke:#000000; stroke-width:4; stroke-opacity:1; fill:none" points="
+  125.256,1486.45 2352.76,1486.45 
+  " />
+<polyline clip-path="url(#clip1700)" style="stroke:#000000; stroke-width:4; stroke-opacity:1; fill:none" points="
+  125.256,1486.45 125.256,47.2441 
+  " />
+<polyline clip-path="url(#clip1700)" style="stroke:#000000; stroke-width:4; stroke-opacity:1; fill:none" points="
+  368.098,1486.45 368.098,1469.18 
+  " />
+<polyline clip-path="url(#clip1700)" style="stroke:#000000; stroke-width:4; stroke-opacity:1; fill:none" points="
+  929.974,1486.45 929.974,1469.18 
+  " />
+<polyline clip-path="url(#clip1700)" style="stroke:#000000; stroke-width:4; stroke-opacity:1; fill:none" points="
+  1491.85,1486.45 1491.85,1469.18 
+  " />
+<polyline clip-path="url(#clip1700)" style="stroke:#000000; stroke-width:4; stroke-opacity:1; fill:none" points="
+  2053.73,1486.45 2053.73,1469.18 
+  " />
+<polyline clip-path="url(#clip1700)" style="stroke:#000000; stroke-width:4; stroke-opacity:1; fill:none" points="
+  125.256,1275.01 151.986,1275.01 
+  " />
+<polyline clip-path="url(#clip1700)" style="stroke:#000000; stroke-width:4; stroke-opacity:1; fill:none" points="
+  125.256,878.006 151.986,878.006 
+  " />
+<polyline clip-path="url(#clip1700)" style="stroke:#000000; stroke-width:4; stroke-opacity:1; fill:none" points="
+  125.256,481.006 151.986,481.006 
+  " />
+<polyline clip-path="url(#clip1700)" style="stroke:#000000; stroke-width:4; stroke-opacity:1; fill:none" points="
+  125.256,84.0063 151.986,84.0063 
+  " />
+<path clip-path="url(#clip1700)" d="M 0 0 M348.967 1525.04 L361.443 1525.04 L361.443 1528.83 L348.967 1528.83 L348.967 1525.04 Z" fill="#000000" fill-rule="evenodd" fill-opacity="1" /><path clip-path="url(#clip1700)" d="M 0 0 M367.323 1535.98 L374.962 1535.98 L374.962 1509.62 L366.652 1511.29 L366.652 1507.03 L374.916 1505.36 L379.591 1505.36 L379.591 1535.98 L387.23 1535.98 L387.23 1539.92 L367.323 1539.92 L367.323 1535.98 Z" fill="#000000" fill-rule="evenodd" fill-opacity="1" /><path clip-path="url(#clip1700)" d="M 0 0 M929.974 1508.44 Q926.363 1508.44 924.534 1512 Q922.729 1515.55 922.729 1522.67 Q922.729 1529.78 924.534 1533.35 Q926.363 1536.89 929.974 1536.89 Q933.608 1536.89 935.414 1533.35 Q937.243 1529.78 937.243 1522.67 Q937.243 1515.55 935.414 1512 Q933.608 1508.44 929.974 1508.44 M929.974 1504.73 Q935.784 1504.73 938.84 1509.34 Q941.919 1513.92 941.919 1522.67 Q941.919 1531.4 938.84 1536.01 Q935.784 1540.59 929.974 1540.59 Q924.164 1540.59 921.085 1536.01 Q918.03 1531.4 918.03 1522.67 Q918.03 1513.92 921.085 1509.34 Q924.164 1504.73 929.974 1504.73 Z" fill="#000000" fill-rule="evenodd" fill-opacity="1" /><path clip-path="url(#clip1700)" d="M 0 0 M1482.23 1535.98 L1489.87 1535.98 L1489.87 1509.62 L1481.56 1511.29 L1481.56 1507.03 L1489.82 1505.36 L1494.5 1505.36 L1494.5 1535.98 L1502.14 1535.98 L1502.14 1539.92 L1482.23 1539.92 L1482.23 1535.98 Z" fill="#000000" fill-rule="evenodd" fill-opacity="1" /><path clip-path="url(#clip1700)" d="M 0 0 M2048.38 1535.98 L2064.7 1535.98 L2064.7 1539.92 L2042.75 1539.92 L2042.75 1535.98 Q2045.42 1533.23 2050 1528.6 Q2054.61 1523.95 2055.79 1522.61 Q2058.03 1520.08 2058.91 1518.35 Q2059.81 1516.59 2059.81 1514.9 Q2059.81 1512.14 2057.87 1510.41 Q2055.95 1508.67 2052.85 1508.67 Q2050.65 1508.67 2048.19 1509.43 Q2045.76 1510.2 2042.98 1511.75 L2042.98 1507.03 Q2045.81 1505.89 2048.26 1505.31 Q2050.72 1504.73 2052.75 1504.73 Q2058.12 1504.73 2061.32 1507.42 Q2064.51 1510.11 2064.51 1514.6 Q2064.51 1516.73 2063.7 1518.65 Q2062.92 1520.54 2060.81 1523.14 Q2060.23 1523.81 2057.13 1527.03 Q2054.03 1530.22 2048.38 1535.98 Z" fill="#000000" fill-rule="evenodd" fill-opacity="1" /><path clip-path="url(#clip1700)" d="M 0 0 M62.9921 1277.4 L75.4689 1277.4 L75.4689 1281.2 L62.9921 1281.2 L62.9921 1277.4 Z" fill="#000000" fill-rule="evenodd" fill-opacity="1" /><path clip-path="url(#clip1700)" d="M 0 0 M81.3485 1288.35 L88.9874 1288.35 L88.9874 1261.99 L80.6772 1263.65 L80.6772 1259.39 L88.9411 1257.73 L93.617 1257.73 L93.617 1288.35 L101.256 1288.35 L101.256 1292.29 L81.3485 1292.29 L81.3485 1288.35 Z" fill="#000000" fill-rule="evenodd" fill-opacity="1" /><path clip-path="url(#clip1700)" d="M 0 0 M89.3114 863.805 Q85.7003 863.805 83.8716 867.369 Q82.0661 870.911 82.0661 878.041 Q82.0661 885.147 83.8716 888.712 Q85.7003 892.254 89.3114 892.254 Q92.9457 892.254 94.7512 888.712 Q96.5799 885.147 96.5799 878.041 Q96.5799 870.911 94.7512 867.369 Q92.9457 863.805 89.3114 863.805 M89.3114 860.101 Q95.1216 860.101 98.1771 864.707 Q101.256 869.291 101.256 878.041 Q101.256 886.767 98.1771 891.374 Q95.1216 895.957 89.3114 895.957 Q83.5013 895.957 80.4226 891.374 Q77.367 886.767 77.367 878.041 Q77.367 869.291 80.4226 864.707 Q83.5013 860.101 89.3114 860.101 Z" fill="#000000" fill-rule="evenodd" fill-opacity="1" /><path clip-path="url(#clip1700)" d="M 0 0 M81.3485 494.351 L88.9874 494.351 L88.9874 467.985 L80.6772 469.652 L80.6772 465.393 L88.9411 463.726 L93.617 463.726 L93.617 494.351 L101.256 494.351 L101.256 498.286 L81.3485 498.286 L81.3485 494.351 Z" fill="#000000" fill-rule="evenodd" fill-opacity="1" /><path clip-path="url(#clip1700)" d="M 0 0 M84.9365 97.3511 L101.256 97.3511 L101.256 101.286 L79.3115 101.286 L79.3115 97.3511 Q81.9735 94.5965 86.5568 89.9669 Q91.1633 85.3141 92.3438 83.9716 Q94.5892 81.4484 95.4688 79.7123 Q96.3716 77.9531 96.3716 76.2633 Q96.3716 73.5086 94.4271 71.7725 Q92.5059 70.0364 89.404 70.0364 Q87.205 70.0364 84.7513 70.8003 Q82.3207 71.5642 79.543 73.1151 L79.543 68.3929 Q82.367 67.2587 84.8207 66.68 Q87.2744 66.1013 89.3114 66.1013 Q94.6818 66.1013 97.8762 68.7865 Q101.071 71.4716 101.071 75.9623 Q101.071 78.092 100.26 80.0132 Q99.4734 81.9114 97.3669 84.504 Q96.7882 85.1753 93.6864 88.3928 Q90.5846 91.5873 84.9365 97.3511 Z" fill="#000000" fill-rule="evenodd" fill-opacity="1" /><circle clip-path="url(#clip1702)" cx="924.355" cy="758.906" r="14" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="3.2" />
+<circle clip-path="url(#clip1702)" cx="1098.54" cy="989.166" r="14" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="3.2" />
+<circle clip-path="url(#clip1702)" cx="188.298" cy="1445.72" r="14" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="3.2" />
+<circle clip-path="url(#clip1702)" cx="693.986" cy="1104.3" r="14" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="3.2" />
+<circle clip-path="url(#clip1702)" cx="929.974" cy="639.806" r="14" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="3.2" />
+<circle clip-path="url(#clip1702)" cx="1536.8" cy="711.266" r="14" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="3.2" />
+<circle clip-path="url(#clip1702)" cx="2289.71" cy="87.9763" r="14" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="3.2" />
+<circle clip-path="url(#clip1702)" cx="1559.28" cy="866.096" r="14" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="3.2" />
+<circle clip-path="url(#clip1702)" cx="958.068" cy="627.896" r="14" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="3.2" />
+<circle clip-path="url(#clip1702)" cx="1755.93" cy="187.226" r="14" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="3.2" />
+<path clip-path="url(#clip1700)" d="
+M1989.74 251.724 L2280.76 251.724 L2280.76 130.764 L1989.74 130.764  Z
+  " fill="#ffffff" fill-rule="evenodd" fill-opacity="1" />
+<polyline clip-path="url(#clip1700)" style="stroke:#000000; stroke-width:4; stroke-opacity:1; fill:none" points="
+  1989.74,251.724 2280.76,251.724 2280.76,130.764 1989.74,130.764 1989.74,251.724 
+  " />
+<circle clip-path="url(#clip1700)" cx="2097.74" cy="191.244" r="21" fill="#009af9" fill-rule="evenodd" fill-opacity="1" stroke="#000000" stroke-opacity="1" stroke-width="3.2" />
+<path clip-path="url(#clip1700)" d="M 0 0 M2195.58 210.931 Q2193.77 215.561 2192.06 216.973 Q2190.35 218.385 2187.48 218.385 L2184.08 218.385 L2184.08 214.82 L2186.58 214.82 Q2188.33 214.82 2189.31 213.987 Q2190.28 213.154 2191.46 210.052 L2192.22 208.107 L2181.74 182.598 L2186.25 182.598 L2194.35 202.876 L2202.46 182.598 L2206.97 182.598 L2195.58 210.931 Z" fill="#000000" fill-rule="evenodd" fill-opacity="1" /><path clip-path="url(#clip1700)" d="M 0 0 M2212.85 204.589 L2220.49 204.589 L2220.49 178.223 L2212.18 179.89 L2212.18 175.631 L2220.44 173.964 L2225.12 173.964 L2225.12 204.589 L2232.76 204.589 L2232.76 208.524 L2212.85 208.524 L2212.85 204.589 Z" fill="#000000" fill-rule="evenodd" fill-opacity="1" /></svg>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>From the plot, we can see that these points center around a line that passes the origin. If x and y mean two physics measurement at the same time, then we might believe these two variables have linear relationship. The problem is, how should we calculate this line? More generally, how to find directions of the trend of changes of a set of n-dimension data with mean zero?</p>
+<p>First of all, assume the sample $X \in R^{m\times n}$, its $i(1,2,\cdots,n)th$ column $x_i$ represents the $ith$ m-dimension sample. In total, there are n samples with mean zero:
+
+$$X = (x_1,x_2,\cdots,x_n), x_i \in R^m$$ $$\sum_{i=1}^n x_i = 0$$
+
+Projecting these n samples onto some unit vector $u$, if the directions of $u$ matches the direction of the most violent change, then the projected samples have length along the the direction of $u$, $|u^TX|^2$, the maximum of all times. Hence, we have the following optimization problem: $$O = max(uXX^Tu) \space s.t. \space u^tu = 1$$
+Since $XX^T$ is a symmetric matrix, we can do diagonalization: $XX^T = Q^T\Lambda Q$. $$u^TXX^Tu=u^TQ^T\Lambda Qu = y^T \Lambda y$$ with $y^Ty=1$ as orthogonal linear transformations preserve the inner product. Expanding the above equation, we have $$y^T\Lambda y = \sum_{i=1}^n y_i^2\lambda_i \leq \lambda_1\sum_{i=1}^n y_i^2 = \lambda_1$$</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>$\lambda_1$ is the largest eigenvalue of $XX^T$ (Assume $\Lambda=diag(\lambda_1,\lambda_2,\cdots,\lambda_n)$ has its eigenvalues in the diagonal in descending order), when $y=(1,0,0,\cdots,0)$. Now $u$ is the first column of the eigenvector matrix $Q$, which is the eigenvector of $\lambda_1$. The above property is the condition of Rayleigh-Ritz theorem in $R$. In other words, when $u$ is left singular vector of the largest singular value of the matrix $X$, the sample data has its biggest sum of squares of projections on the direction of $u$, which is the square of the largest singular value. Similarly, if we want to find the $k(k=1,2,\cdots,n)$ number of the most violent change of sample data, according to Rayleigh-Ritz theorem, we should find the k number of left singular vectors of the matrix $X$.</p>
+<p>Since those k number of orthogonal vectors show the major trend of the data well, they can be a set of image representation basis, which is also called the Principle Component of the sample data. Suppose $k=rank(X)$, we can use SVD to show the principle component ($u_1,u_2,\cdots,u_k$) of data $x_j$: $$X = (u_1,u_2,\cdots,u_k)\Sigma V^T = (u_1,u_2,\cdots,u_k)C$$
+$$\Leftarrow \Rightarrow (x_1,x_2,\cdots,x_k) = (u_1,u_2,\cdots,u_k) \left(\begin{matrix}
+   c_{11} &amp;\cdots&amp; c_{1n} \\
+   \vdots &amp;\ddots&amp;\vdots\\
+   c_{n1} &amp;\cdots&amp; c_{nn}
+  \end{matrix}\right)$$
+
+$$\Leftarrow \Rightarrow x_j = \sum_{i=1}^k u_ic_{ij} (j=1,2,\cdots,n)$$
+
+In the real world, the principle component number $k$ is always smaller than the original dimension of data $X$, so we acquire a more tight image reprensentaion through SVD. In the chart above, we can get the first principle component is $u_1=(-0.74, -0.67)^T$ with singular value 4.63. And the projected sample data vector length has square root 1.38.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In image processing, especially the face recognition, sample matrix $X$ has each of its column as a column of image. Suppose the image is of size (256 $\times$ 256) pixels, the dimension of this image is 65536. As the increase of sample data, such a high dimension posts a big challenge to data storage and the computing resources. However, comparing to the high dimension of images, the total number of images is much smaller. Assume that a face recognition system has 50 users and each user has 10 sample images, we will have 500 images in database. The sample matrix of these data is very narrow, which is $X \in R^{65536\times 500}$. Based on the property of singular value decomposition, this matrix has at most 500 non-zero singular values, meaning that only 500 principle components have change of directions larger than zero while in other directions, all samples remain undeviated.</p>
+<p>Therefore, we can assume all 50 users are distributed in a relatively lower dimension of vector space. This space is consists of a basis of 500 principle components. After we read a image, we can project it onto this low dimension space and use a certain algorithm to recognize it.</p>
+<p>Surprisingly, if we recover these principle components back to an image, these images resemble the basic information and attributes of a human face. Hence, these faces are called "Eigenface."</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Reference">Reference<a class="anchor-link" href="#Reference"> </a></h1><ol>
+<li>Lawson, C.L. and R.J. Hanson, Solving least squares problems. Vol. 15. 1995: SIAM.</li>
+</ol>
+
+</div>
+</div>
+</div>
+</div>
+
+
+
+  </div><a class="u-url" href="/data_1010_blog/2020/11/20/blog.html" hidden></a>
+</article>
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/data_1010_blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/data_1010_blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/data_1010_blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>An easy to use blogging platform with support for Jupyter Notebooks.</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" title="fastai"><svg class="svg-icon grey"><use xlink:href="/data_1010_blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/data_1010_blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
