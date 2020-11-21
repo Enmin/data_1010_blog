@@ -237,8 +237,9 @@ Hence, SVD not only generates 4 unit orthogonal bases of 4 vectors space of the 
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Digital images could be considered as a 2-dimension matrix in which every entry represents the grayness of a pixel in the image. With the development of the related technologies, modern digital cameras are able to photograph a picture of millions of pixels. As a result, the matrix of the image has a relative large size, even huge. But due to the large portion of areas that have similar colors, which means the pixels are highly correlated in those areas, the image as certain certain level of redundancy of information in its corresponding matrix. <br />
 <br />
-Such redundancy can be measured by the rank of the matrix: A high rank matrix as lower correlation between columns and a low rank matrix has higher correlation bewteen columns. The picture below is transformed from a vector $u = [0, 0.1, 0.2, \cdots, 0.9]$ right multiplies a vector $v^H$ with 10 entries all equal to 1. <br /></p>
-<p><div align="center">&lt;img width = '150' height ='150' src =blog_imgs/black.png&gt;</div> <br />
+Such redundancy can be measured by the rank of the matrix: A high rank matrix as lower correlation between columns and a low rank matrix has higher correlation bewteen columns. The picture below is transformed from a vector $u = [0, 0.1, 0.2, \cdots, 0.9]$ right multiplies a vector $v^H$ with 10 entries all equal to 1. <br />
+<!-- <div align=center><img width = '150' height ='150' src =blog_imgs/black.png></div> <br> -->
+<img src="/data_1010_blog/images/copied_from_nb/blog_imgs/black.png" alt="" /> <br />
 The matrix of the image is 
 $$\left(\begin{matrix}
    0 &amp; 0 &amp; \cdots &amp; 0 \\
@@ -283,7 +284,7 @@ takes its minimum when $A=\sigma_1 u_1 v_1^H$, and $\sigma_1$ is the biggest sin
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3><div align="center">---------------------------------------------------------------------------Simple Proof---------------------------------------------------------------------------------------</div></h3>
+<h3><div align="center">-----Simple Proof-----</div></h3>
 <p>We can take the SVD of $A$ as $U\Sigma V^H$ and take it into the object funciton: $$||A - A_1||_F = ||U\Sigma V^H - A_1||_F$$
 Due to Forbenius norm's unitary invariance, we get $$ ||U\Sigma V^H - A_1||_F = ||\Sigma - U^HA_1V||_F$$
 As $A_1$ has rank 1, $U^HA_1V$ can be represented as $\alpha xy^H$, of which $x,y$ are the unit vectors in $C^M,C^N$. Hence, $$||U\Sigma V^H - A_1||_F = ||\Sigma-\alpha xy^H||_F$$
@@ -301,7 +302,7 @@ Above all, the lower bound of $||A-A_1||_F^2$ = $$\Sigma^H\Sigma + \alpha^2 - 2\
 $$\geq ||\Sigma||_F^2 + \alpha^2 - 2\alpha\sigma_1$$ $$=||\Sigma||_F^2 + (\alpha-\sigma_1)^2 - \sigma_1^2$$
 
 When $\alpha = \sigma_1$, this lower bound gets its minimum $||\Sigma||_F^2 - \sigma_1^2$. By the way, $x,y$ is equal to $e_1 = (1,0,\cdots,0)^T$. Now we have $$A_1 = \alpha Uxy^HV^H=\alpha u_1v_1^H$$</p>
-<h3><div align="center">-------------------------------------------------------------------------------Done--------------------------------------------------------------------------------------------</div></h3>
+<h3><div align="center">-----Done-----</div></h3>
 
 </div>
 </div>
@@ -329,9 +330,62 @@ Above all, the first $kth$ outer products of SVD outer product expansion is its 
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><div align="center">&lt;img width = '150' height ='150' src=blog_imgs/example.png&gt;</div> <br /></p>
-<p><div align="center">&lt;img width = '250' height ='250' src=blog_imgs/example2.png&gt;</div> <br /></p>
+<p><!-- <div align=center><img width = '150' height ='150' src=blog_imgs/example.png></div> <br> -->
+<!-- <div align=center><img width = '250' height ='250' src=blog_imgs/example2.png></div> <br> -->
+<img src="/data_1010_blog/images/copied_from_nb/blog_imgs/example.png" alt="" /> <br />
+<img src="/data_1010_blog/images/copied_from_nb/blog_imgs/example2.png" alt="" /></p>
 
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">cv2</span>
+
+<span class="n">img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="s1">&#39;beach.jpg&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># obtain svd</span>
+<span class="n">U</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">svd</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">U</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">S</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+<span class="n">comps</span> <span class="o">=</span> <span class="p">[</span><span class="mi">638</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">400</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">]</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">):</span>
+    <span class="n">low_rank</span> <span class="o">=</span> <span class="n">U</span><span class="p">[:,</span> <span class="p">:</span><span class="n">comps</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">S</span><span class="p">[:</span><span class="n">comps</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span> <span class="o">@</span> <span class="n">V</span><span class="p">[:</span><span class="n">comps</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="p">:]</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">i</span>  <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">low_rank</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;gray&#39;</span><span class="p">),</span> <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">),</span> <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Original Image with n_components =&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">comps</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">low_rank</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;gray&#39;</span><span class="p">),</span> <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">),</span> <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;n_components =&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">comps</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;beach-svd.jpg&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/data_1010_blog/images/copied_from_nb/blog_imgs/beach.jpg" alt="beach" />
+<img src="/data_1010_blog/images/copied_from_nb/blog_imgs/beach-svd.jpg" alt="beach-svd" /></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="With-the-rank-decreased,-the-compressed-images-are-getting-more-vague-but-still-keep-the-most-information-we-need-to-recognize-the-'beach'-content.">With the rank decreased, the compressed images are getting more vague but still keep the most information we need to recognize the 'beach' content.<a class="anchor-link" href="#With-the-rank-decreased,-the-compressed-images-are-getting-more-vague-but-still-keep-the-most-information-we-need-to-recognize-the-'beach'-content."> </a></h4>
 </div>
 </div>
 </div>
@@ -357,12 +411,12 @@ Above all, the first $kth$ outer products of SVD outer product expansion is its 
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-julia"><pre><span></span><span class="k">using</span> <span class="n">Plots</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">using</span> <span class="n">Plots</span>
 <span class="n">a</span> <span class="o">=</span> <span class="p">[(</span><span class="o">-</span><span class="mf">0.01</span><span class="p">,</span><span class="mf">0.3</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.3</span><span class="p">,</span><span class="o">-</span><span class="mf">0.28</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mf">1.32</span><span class="p">,</span><span class="o">-</span><span class="mf">1.43</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.42</span><span class="p">,</span><span class="o">-</span><span class="mf">0.57</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.6</span><span class="p">),</span> <span class="p">(</span><span class="mf">1.08</span><span class="p">,</span><span class="mf">0.42</span><span class="p">),</span> <span class="p">(</span><span class="mf">2.42</span><span class="p">,</span><span class="mf">1.99</span><span class="p">),</span> <span class="p">(</span><span class="mf">1.12</span><span class="p">,</span><span class="mf">0.03</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.05</span><span class="p">,</span><span class="mf">0.63</span><span class="p">),</span> <span class="p">(</span><span class="mf">1.47</span><span class="p">,</span><span class="mf">1.74</span><span class="p">)]</span>
-<span class="n">xs</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="kp">in</span> <span class="n">a</span><span class="p">]</span>
-<span class="n">ys</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="kp">in</span> <span class="n">a</span><span class="p">]</span>
+<span class="n">xs</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">a</span><span class="p">]</span>
+<span class="n">ys</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">a</span><span class="p">]</span>
 <span class="n">gr</span><span class="p">()</span>
-<span class="n">plot</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">,</span> <span class="n">seriestype</span> <span class="o">=</span> <span class="o">:</span><span class="n">scatter</span><span class="p">)</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">,</span> <span class="n">seriestype</span> <span class="o">=</span> <span class="p">:</span><span class="n">scatter</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -517,6 +571,13 @@ In the real world, the principle component number $k$ is always smaller than the
 <p>In image processing, especially the face recognition, sample matrix $X$ has each of its column as a column of image. Suppose the image is of size (256 $\times$ 256) pixels, the dimension of this image is 65536. As the increase of sample data, such a high dimension posts a big challenge to data storage and the computing resources. However, comparing to the high dimension of images, the total number of images is much smaller. Assume that a face recognition system has 50 users and each user has 10 sample images, we will have 500 images in database. The sample matrix of these data is very narrow, which is $X \in R^{65536\times 500}$. Based on the property of singular value decomposition, this matrix has at most 500 non-zero singular values, meaning that only 500 principle components have change of directions larger than zero while in other directions, all samples remain undeviated.</p>
 <p>Therefore, we can assume all 50 users are distributed in a relatively lower dimension of vector space. This space is consists of a basis of 500 principle components. After we read a image, we can project it onto this low dimension space and use a certain algorithm to recognize it.</p>
 <p>Surprisingly, if we recover these principle components back to an image, these images resemble the basic information and attributes of a human face. Hence, these faces are called "Eigenface."</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Conclusion">Conclusion<a class="anchor-link" href="#Conclusion"> </a></h1><p>SVD has its important status in preprocessing images and extracting features. Today, I only show its function in image compression and image representation, but we can still see its powerful usage. The mathematics has shown SVD's feasibility and correctness in different ways. I will share more about its usage in machine learning.</p>
 
 </div>
 </div>
